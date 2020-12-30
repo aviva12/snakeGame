@@ -25,7 +25,7 @@ function init()
             for(var i=0;i<this.cells.length;i++)
             {
                 pen.fillStyle="red";
-                pen.fillRect(this.cells[i].x*cs,this.cells[i].y,cs-2,cs);
+                pen.fillRect(this.cells[i].x*cs,this.cells[i].y*cs,cs-2,cs-2);
             }
         },
         updateSnake:function(){
@@ -33,12 +33,56 @@ function init()
             
             var headX=this.cells[0].x;
             var headY=this.cells[0].y;
-            var X=headX+1;
-            var Y=headY;
-            this.cells.unshift({x:X,y:Y});
+            
+            var nextX,nextY;
+            
+            if(this.direction=="right")
+            {
+                nextX=headX+1;
+                nextY=headY;
+            }
+            else if(this.direction=="left")
+            {
+                nextX=headX-1;
+                nextY=headY;
+            }
+            else if(this.direction=="up")
+            {
+                nextX=headX;
+                nextY=headY-1;
+            }
+            else
+            {
+                nextX=headX;
+                nextY=headY+1;
+            }
+            this.cells.unshift({x:nextX,y:nextY});
         }
     }
     snake.createSnake();
+    
+    function keyPressed(e){
+//        console.log(e.key);
+        //condition check
+        if(e.key=="ArrowRight")
+        {
+            snake.direction="right";
+        }
+        else if(e.key=="ArrowLeft")
+        {
+            snake.direction="left";       
+        }
+        else if(e.key=="ArrowUp")
+        {
+            snake.direction="up";       
+        }
+        else
+        {
+            snake.direction="down";  
+        }
+    }
+    //add event listener
+    document.addEventListener('keydown',keyPressed);
 }
 
 function draw(){
