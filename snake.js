@@ -10,8 +10,11 @@ function init()
     //canvas is used to draw graphics using javascript
     pen=canvas.getContext('2d');
     cs=65;
+    food=getRandomFood();
+    game_over=false;
+    
     snake={
-        init_len:5,
+        init_len:2,
         color:"blue",
         cells:[],
         direction:"right",
@@ -24,15 +27,22 @@ function init()
         drawSnake:function(){
             for(var i=0;i<this.cells.length;i++)
             {
-                pen.fillStyle="red";
+                pen.fillStyle="blue";
                 pen.fillRect(this.cells[i].x*cs,this.cells[i].y*cs,cs-2,cs-2);
             }
         },
         updateSnake:function(){
-            this.cells.pop();
-            
-            var headX=this.cells[0].x;
-            var headY=this.cells[0].y;
+            var headX = this.cells[0].x;
+            var headY = this.cells[0].y;
+
+            if(headX==food.x && headY==food.y){
+                console.log("Food eaten");
+                food = getRandomFood();
+            }
+            else
+            {
+                this.cells.pop();
+            }
             
             var nextX,nextY;
             
@@ -57,6 +67,13 @@ function init()
                 nextY=headY+1;
             }
             this.cells.unshift({x:nextX,y:nextY});
+            
+            var last_x = Math.round(W/cs);
+			var last_y = Math.round(H/cs);
+
+			if(this.cells[0].y<0 || this.cells[0].x < 0 || this.cells[0].x > last_x || this.cells[0].y > last_y){
+				game_over = true;
+			}
         }
     }
     snake.createSnake();
@@ -85,9 +102,25 @@ function init()
     document.addEventListener('keydown',keyPressed);
 }
 
+function getRandomFood(){
+
+	var foodX = Math.round(Math.random()*(W-cs)/cs);
+	var foodY = Math.round(Math.random()*(H-cs)/cs);
+
+	var food = {
+		x:foodX,
+		y:foodY,
+		color:"red",
+	}
+	return food
+
+}
+
 function draw(){
     pen.clearRect(0,0,W,H);
     snake.drawSnake();
+    pen.fillStyle = food.color;
+	pen.fillRect(food.x*cs,food.y*cs,cs,cs);
 }
 
 function update(){
@@ -95,6 +128,11 @@ function update(){
 }
 
 function gameloop(){
+    if(game_over==true){
+		clearInterval(f);
+		alert("Game Over");
+		return;
+	}
     draw();
     update();
 }
