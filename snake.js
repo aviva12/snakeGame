@@ -15,10 +15,10 @@ function init()
     score=0;
     
     food_img = new Image();
-	food_img.src = "assets/apple.png";
+	food_img.src = "./assets/apple.png";
 
 	trophy = new Image();
-	trophy.src = "assets/trophy.png";
+	trophy.src = "./assets/trophy.png";
     
     snake={
         init_len:2,
